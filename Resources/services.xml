@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- Config -->
+        <service id="nlx.lighthouse_theme_helper.plugin_config" class="Shopware\Components\Plugin\CachedConfigReader">
+            <factory service="shopware.plugin.cached_config_reader" method="getByPluginName"/>
+            <argument type="string">nlxLighthouseThemeHelper</argument>
+        </service>
+
+        <service id="nlx.lighthouse_theme_helper.subscriber.less_collection" class="nlxLighthouseThemeHelper\Subscriber\LessCollection">
+            <argument type="service" id="less_compiler" />
+            <argument type="service" id="theme_inheritance" />
+            <argument type="service" id="theme_path_resolver" ></argument>
+            <argument type="service" id="theme_timestamp_persistor" ></argument>
+            <argument>%shopware.app.rootdir%</argument>
+            <tag name="shopware.event_subscriber" />
+        </service>
+
+        <service id="nlx.lighthouse_theme_helper.subscriber.template" class="nlxLighthouseThemeHelper\Subscriber\TemplateRegistration">
+            <argument type="string">%nlx_lighthouse_theme_helper.plugin_dir%</argument>
+            <argument type="service" id="template"/>
+            <tag name="shopware.event_subscriber" />
+        </service>
+
+        <service id="nlx.lighthouse_theme_helper.subscriber.frontend_variables" class="nlxLighthouseThemeHelper\Subscriber\FrontendVariables">
+            <argument type="service" id="theme_path_resolver"/>
+            <tag name="shopware.event_subscriber" />
+        </service>
+    </services>
+</container>
